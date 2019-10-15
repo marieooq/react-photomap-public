@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import mapboxgl from "mapbox-gl";
+import Twitter from "./Twitter";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -67,6 +68,7 @@ class App extends Component {
         >
           {"氷雪地帯は？"}
         </button>
+        <Twitter />
       </div>
     );
   }
