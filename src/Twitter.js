@@ -8,7 +8,7 @@ const client = new Twitter({
 });
 
 // Load your image
-const data = require("fs").readFileSync("../public/image.jpg");
+const data = require("fs").readFileSync("../public/image2.jpg");
 
 // Make post request on media endpoint. Pass file data as media parameter
 client.post("media/upload", { media: data }, function(error, media, response) {
