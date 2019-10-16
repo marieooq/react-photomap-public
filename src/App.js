@@ -8,12 +8,22 @@ const BASE_URL = "https://api.mapbox.com/styles/v1/mapbox/streets-v9";
 
 class App extends Component {
   state = {
-    style: false
+    style: false,
+    imageFromTwitter: "",
+    placeFromTwitter: []
   };
 
   componentDidMount = async () => {
     const response = await axios.post("http://localhost:3000/twitterapi");
-    console.log(response.data);
+    console.log(response.data.statuses[0].entities.media[0].media_url);
+    console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
+
+    this.setState({
+      imageFromTwitter: response.data.statuses[0].entities.media[0].media_url,
+      placeFromTwitter:
+        response.data.statuses[0].place.bounding_box.coordinates[0][0]
+    });
+
     const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
 
     let style = {};
@@ -39,7 +49,8 @@ class App extends Component {
 
     this.map.on("load", () => {
       this.map.loadImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png",
+        //load an image from twitterAPI
+        this.state.imageFromTwitter,
         (error, image) => {
           if (error) throw error;
           this.map.addImage("cat", image);
@@ -55,7 +66,8 @@ class App extends Component {
                     type: "Feature",
                     geometry: {
                       type: "Point",
-                      coordinates: [98.9619563624352, 18.80534516894638] //changed to Chaing Mai temporally
+                      //[latitude, longitude] from twitter API
+                      coordinates: this.state.placeFromTwitter
                     }
                   }
                 ]
