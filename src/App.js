@@ -53,7 +53,7 @@ class App extends Component {
         this.state.imageFromTwitter,
         (error, image) => {
           if (error) throw error;
-          this.map.addImage("cat", image);
+          this.map.addImage("photo", image);
           this.map.addLayer({
             id: "points",
             type: "symbol",
@@ -74,8 +74,8 @@ class App extends Component {
               }
             },
             layout: {
-              "icon-image": "cat",
-              "icon-size": 0.25
+              "icon-image": "photo",
+              "icon-size": 0.1
             }
           });
         }
