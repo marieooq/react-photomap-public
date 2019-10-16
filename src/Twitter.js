@@ -7,33 +7,25 @@ const client = new Twitter({
   access_token_secret: "rHmuaNraDZD3xH0ivN0wLyoPfz3F5OBQXXSmq5pxEWEhX"
 });
 
-client.get("search/tweets", { q: "#photomap" }, function(
-  error,
-  tweets,
-  response
-) {
-  console.log(tweets.statuses[0].place.bounding_box.coordinates);
-});
-
 // Load your image
-// const data = require("fs").readFileSync("../public/image2.jpg");
+const data = require("fs").readFileSync("../public/image2.jpg");
 
 // Make post request on media endpoint. Pass file data as media parameter
-// client.post("media/upload", { media: data }, function(error, media, response) {
-//   if (!error) {
-//     // If successful, a media object will be returned.
-//     console.log(media);
+client.post("media/upload", { media: data }, function(error, media, response) {
+  if (!error) {
+    // If successful, a media object will be returned.
+    console.log(media);
 
-//     // Lets tweet it
-//     var status = {
-//       status: "This photo has been posted by using API. #photomap",
-//       media_ids: media.media_id_string // Pass the media id string
-//     };
+    // Lets tweet it
+    var status = {
+      status: "This photo has been posted by using API. #photomap",
+      media_ids: media.media_id_string // Pass the media id string
+    };
 
-//     client.post("statuses/update", status, function(error, tweet, response) {
-//       if (!error) {
-//         console.log(tweet);
-//       }
-//     });
-//   }
-// });
+    client.post("statuses/update", status, function(error, tweet, response) {
+      if (!error) {
+        console.log(tweet);
+      }
+    });
+  }
+});
