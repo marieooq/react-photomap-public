@@ -28,10 +28,44 @@ class App extends Component {
 
     this.map = new mapboxgl.Map({
       container: this.container,
-      style
+      style: "mapbox://styles/mapbox/streets-v11"
     });
 
+    console.log(this.map);
     this.setState({ style });
+
+    this.map.on("load", () => {
+      this.map.loadImage(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png",
+        (error, image) => {
+          if (error) throw error;
+          this.map.addImage("cat", image);
+          this.map.addLayer({
+            id: "points",
+            type: "symbol",
+            source: {
+              type: "geojson",
+              data: {
+                type: "FeatureCollection",
+                features: [
+                  {
+                    type: "Feature",
+                    geometry: {
+                      type: "Point",
+                      coordinates: [98.9619563624352, 18.80534516894638] //changed to Chaing Mai temporally
+                    }
+                  }
+                ]
+              }
+            },
+            layout: {
+              "icon-image": "cat",
+              "icon-size": 0.25
+            }
+          });
+        }
+      );
+    });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -44,31 +78,22 @@ class App extends Component {
     this.map.remove();
   }
 
-  onClick = () => {
-    const prevStyle = this.state.style;
-    console.log(prevStyle);
-    const nextStyle = {
-      ...prevStyle,
-      layers: prevStyle.layers.map(layer =>
-        layer.id === "landcover_snow"
-          ? { ...layer, paint: { ...layer.paint, "fill-color": "red" } }
-          : layer
-      )
-    };
-    this.setState({ style: nextStyle });
-  };
+  // onClick = () => {
+  //   const prevStyle = this.state.style;
+  //   console.log(prevStyle);
+  //   const nextStyle = {
+  //     ...prevStyle,
+  //     layers: prevStyle.layers.map(layer =>
+  //       layer.id === "landcover_snow"
+  //         ? { ...layer, paint: { ...layer.paint, "fill-color": "red" } }
+  //         : layer
+  //     )
+  //   };
+  //   this.setState({ style: nextStyle });
+  // };
 
   render() {
-    return (
-      <div className={"map"} ref={e => (this.container = e)}>
-        <button
-          style={{ position: "absolute", zIndex: 1 }}
-          onClick={this.onClick}
-        >
-          {"氷雪地帯は？"}
-        </button>
-      </div>
-    );
+    return <div className={"map"} ref={e => (this.container = e)}></div>;
   }
 }
 
