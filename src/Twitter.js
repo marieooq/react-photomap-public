@@ -7,6 +7,17 @@ const client = new Twitter({
   access_token_secret: "rHmuaNraDZD3xH0ivN0wLyoPfz3F5OBQXXSmq5pxEWEhX"
 });
 
+<<<<<<< HEAD
+=======
+client.get("search/tweets", { q: "#photomap" }, function(
+  error,
+  tweets,
+  response
+) {
+  console.log(tweets.statuses[0].place.bounding_box.coordinates);
+});
+
+>>>>>>> parent of 0ae126d... get place information from the image #75ff866e
 // Load your image
 const data = require("fs").readFileSync("../public/image2.jpg");
 
