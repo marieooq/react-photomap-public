@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import mapboxgl from "mapbox-gl";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import TwitterClient from "./Twitter";
 
 const BASE_URL = "https://api.mapbox.com/styles/v1/mapbox/streets-v9";
 
@@ -11,6 +12,9 @@ class App extends Component {
   };
 
   componentDidMount = async () => {
+    const twitterClient = new TwitterClient();
+    const result = await twitterClient.getTweets();
+    console.log(result);
     const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
 
     let style = {};
