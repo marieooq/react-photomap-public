@@ -12,7 +12,7 @@ client.get("search/tweets", { q: "#photomap" }, function(
   tweets,
   response
 ) {
-  console.log(tweets.statuses[0].place.bounding_box.coordinates[0][0]);
+  console.log(tweets.statuses[0].place.bounding_box.coordinates);
 });
 
 // Load your image
