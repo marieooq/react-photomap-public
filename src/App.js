@@ -17,7 +17,9 @@ class App extends Component {
   componentDidMount = async () => {
     const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
 
-    const response = await axios.post("http://localhost:3000/twitterapi");
+    const response = await axios.post(
+      "https://photos-mapping.firebaseapp.com/twitterapi"
+    );
     // console.log(response.data.statuses);
     // console.log(response.data.statuses[0].entities.media[0].media_url);
     // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
