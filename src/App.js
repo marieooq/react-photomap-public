@@ -3,16 +3,36 @@ import mapboxgl from "mapbox-gl";
 import Twitter from "./Twitter";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import axios from "axios";
 
 const BASE_URL = "https://api.mapbox.com/styles/v1/mapbox/streets-v9";
 
 class App extends Component {
   state = {
-    style: false
+    style: false,
+    dataFromTwitter: [],
+    imageFromTwitter: "",
+    placeFromTwitter: []
   };
 
   componentDidMount = async () => {
     const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
+
+    const response = await axios.post(
+      "https://photos-mapping.firebaseapp.com/twitterapi"
+    );
+    // console.log(response.data.statuses);
+    // console.log(response.data.statuses[0].entities.media[0].media_url);
+    // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
+
+    this.setState({
+      dataFromTwitter: response.data.statuses,
+      imageFromTwitter: response.data.statuses[0].entities.media[0].media_url,
+      placeFromTwitter:
+        response.data.statuses[0].place.bounding_box.coordinates[0][0]
+    });
+
+    // console.log(this.state);
 
     let style = {};
     try {
@@ -29,10 +49,59 @@ class App extends Component {
 
     this.map = new mapboxgl.Map({
       container: this.container,
-      style
+      style: "mapbox://styles/mapbox/streets-v11"
     });
 
     this.setState({ style });
+
+    this.map.on("load", () => {
+      this.state.dataFromTwitter.forEach((data, index) => {
+        this.map.loadImage(
+          //load an image from twitterAPI
+          data.entities.media[0].media_url,
+          (error, image) => {
+            console.log("--------");
+            console.log(data);
+            console.log(data.entities.media[0].media_url);
+            console.log(data.place.bounding_box.coordinates[0][0]);
+            console.log("--------");
+            const photoId = `photo${data.id}`;
+
+            if (error) throw error;
+            if (
+              data.entities.media[0].media_url !== null &&
+              data.place !== null
+            ) {
+              this.map.addImage(photoId, image);
+              this.map.addLayer({
+                id: photoId,
+                type: "symbol",
+                source: {
+                  type: "geojson",
+                  data: {
+                    type: "FeatureCollection",
+                    features: [
+                      {
+                        type: "Feature",
+                        geometry: {
+                          type: "Point",
+                          //[latitude, longitude] from twitter API
+                          coordinates: data.place.bounding_box.coordinates[0][0]
+                        }
+                      }
+                    ]
+                  }
+                },
+                layout: {
+                  "icon-image": photoId,
+                  "icon-size": 0.1
+                }
+              });
+            }
+          }
+        );
+      });
+    });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -45,32 +114,8 @@ class App extends Component {
     this.map.remove();
   }
 
-  onClick = () => {
-    const prevStyle = this.state.style;
-    console.log(prevStyle);
-    const nextStyle = {
-      ...prevStyle,
-      layers: prevStyle.layers.map(layer =>
-        layer.id === "landcover_snow"
-          ? { ...layer, paint: { ...layer.paint, "fill-color": "red" } }
-          : layer
-      )
-    };
-    this.setState({ style: nextStyle });
-  };
-
   render() {
-    return (
-      <div className={"map"} ref={e => (this.container = e)}>
-        <button
-          style={{ position: "absolute", zIndex: 1 }}
-          onClick={this.onClick}
-        >
-          {"氷雪地帯は？"}
-        </button>
-        <Twitter />
-      </div>
-    );
+    return <div className={"map"} ref={e => (this.container = e)}></div>;
   }
 }
 

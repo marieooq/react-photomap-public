@@ -12,14 +12,7 @@ class TwitterClient {
 
   getTweets() {
     return this.client.get("search/tweets", { q: "#photomap" });
-    //   error,
-    //   tweets,
-    //   response
-    // ) {
-    //   console.log(tweets.statuses[0].entities.media[0].media_url);
-    //   console.log(tweets.statuses[0].place.bounding_box.coordinates[0][0]);
-    // });
   }
 }
 
-export default TwitterClient;
+module.exports = TwitterClient;
