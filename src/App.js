@@ -9,22 +9,27 @@ const BASE_URL = "https://api.mapbox.com/styles/v1/mapbox/streets-v9";
 class App extends Component {
   state = {
     style: false,
+    dataFromTwitter: [],
     imageFromTwitter: "",
     placeFromTwitter: []
   };
 
   componentDidMount = async () => {
+    const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
+
     const response = await axios.post("http://localhost:3000/twitterapi");
-    console.log(response.data.statuses[0].entities.media[0].media_url);
-    console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
+    // console.log(response.data.statuses);
+    // console.log(response.data.statuses[0].entities.media[0].media_url);
+    // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
 
     this.setState({
+      dataFromTwitter: response.data.statuses,
       imageFromTwitter: response.data.statuses[0].entities.media[0].media_url,
       placeFromTwitter:
         response.data.statuses[0].place.bounding_box.coordinates[0][0]
     });
 
-    const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
+    // console.log(this.state);
 
     let style = {};
     try {
@@ -44,42 +49,55 @@ class App extends Component {
       style: "mapbox://styles/mapbox/streets-v11"
     });
 
-    console.log(this.map);
     this.setState({ style });
 
     this.map.on("load", () => {
-      this.map.loadImage(
-        //load an image from twitterAPI
-        this.state.imageFromTwitter,
-        (error, image) => {
-          if (error) throw error;
-          this.map.addImage("photo", image);
-          this.map.addLayer({
-            id: "points",
-            type: "symbol",
-            source: {
-              type: "geojson",
-              data: {
-                type: "FeatureCollection",
-                features: [
-                  {
-                    type: "Feature",
-                    geometry: {
-                      type: "Point",
-                      //[latitude, longitude] from twitter API
-                      coordinates: this.state.placeFromTwitter
-                    }
+      this.state.dataFromTwitter.forEach((data, index) => {
+        this.map.loadImage(
+          //load an image from twitterAPI
+          data.entities.media[0].media_url,
+          (error, image) => {
+            console.log("--------");
+            console.log(data);
+            console.log(data.entities.media[0].media_url);
+            console.log(data.place.bounding_box.coordinates[0][0]);
+            console.log("--------");
+            const photoId = `photo${data.id}`;
+
+            if (error) throw error;
+            if (
+              data.entities.media[0].media_url !== null &&
+              data.place !== null
+            ) {
+              this.map.addImage(photoId, image);
+              this.map.addLayer({
+                id: photoId,
+                type: "symbol",
+                source: {
+                  type: "geojson",
+                  data: {
+                    type: "FeatureCollection",
+                    features: [
+                      {
+                        type: "Feature",
+                        geometry: {
+                          type: "Point",
+                          //[latitude, longitude] from twitter API
+                          coordinates: data.place.bounding_box.coordinates[0][0]
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-            },
-            layout: {
-              "icon-image": "photo",
-              "icon-size": 0.1
+                },
+                layout: {
+                  "icon-image": photoId,
+                  "icon-size": 0.1
+                }
+              });
             }
-          });
-        }
-      );
+          }
+        );
+      });
     });
   };
 
@@ -92,20 +110,6 @@ class App extends Component {
   componentWillUnmount() {
     this.map.remove();
   }
-
-  // onClick = () => {
-  //   const prevStyle = this.state.style;
-  //   console.log(prevStyle);
-  //   const nextStyle = {
-  //     ...prevStyle,
-  //     layers: prevStyle.layers.map(layer =>
-  //       layer.id === "landcover_snow"
-  //         ? { ...layer, paint: { ...layer.paint, "fill-color": "red" } }
-  //         : layer
-  //     )
-  //   };
-  //   this.setState({ style: nextStyle });
-  // };
 
   render() {
     return <div className={"map"} ref={e => (this.container = e)}></div>;
