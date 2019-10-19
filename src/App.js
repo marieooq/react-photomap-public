@@ -84,7 +84,7 @@ class App extends Component {
                       {
                         type: "Feature",
                         properties: {
-                          description: `<p>Sample Description</p><a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
+                          description: `<p>Jump to twitter</p><a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
                         },
                         geometry: {
                           type: "Point",
@@ -102,7 +102,6 @@ class App extends Component {
               });
 
               this.map.on("click", photoId, e => {
-                console.log(e.features[0].properties.description);
                 const coordinates = e.features[0].geometry.coordinates.slice();
                 const description = e.features[0].properties.description;
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
@@ -113,6 +112,16 @@ class App extends Component {
                   .setLngLat(coordinates)
                   .setHTML(description)
                   .addTo(this.map);
+              });
+
+              // Change the cursor to a pointer when the mouse is over the places layer.
+              this.map.on("mouseenter", photoId, () => {
+                this.map.getCanvas().style.cursor = "pointer";
+              });
+
+              // Change it back to a pointer when it leaves.
+              this.map.on("mouseleave", photoId, () => {
+                this.map.getCanvas().style.cursor = "";
               });
             }
           }
