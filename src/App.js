@@ -57,6 +57,8 @@ class App extends Component {
 
     this.map.on("load", () => {
       this.state.dataFromTwitter.forEach((data, index) => {
+        console.log("This is data from twitter API");
+        console.log(data);
         const truncateCreatedDate = () => {
           const date = data.created_at.substring(4, 10);
           const year = data.created_at.substring(26, 30);
@@ -68,7 +70,6 @@ class App extends Component {
         const lng = latlngArray[0];
 
         // Get address from latidude & longitude.
-
         Geocode.fromLatLng(lat, lng).then(
           response => {
             const address = response.results[0].formatted_address;
@@ -105,8 +106,9 @@ class App extends Component {
                         properties: {
                           description: `
                           <p>Date: ${truncateCreatedDate()}</p>
-                          <p>Country: </p>
-                          <p>District: </p>
+                          <p>Place Name: ${data.place.name} </p>
+                          <p>Country: ${data.place.country} </p>
+                          <p>Address: </p>
                           <p>Jump to twitter</p>
                           <a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
                         },
