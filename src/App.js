@@ -49,8 +49,8 @@ class App extends Component {
 
     this.map = new mapboxgl.Map({
       container: this.container,
-      // style: "mapbox://styles/mapbox/streets-v11"
-      style: "mapbox://styles/marie-woq/ck1w9kk6y074f1cpj90nyztag"
+      style: "mapbox://styles/mapbox/streets-v11"
+      // style: "mapbox://styles/marie-woq/ck1w9kk6y074f1cpj90nyztag"
     });
 
     this.setState({ style });
