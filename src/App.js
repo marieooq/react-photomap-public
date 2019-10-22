@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import mapboxgl from "mapbox-gl";
-import Twitter from "./Twitter";
+import Geocode from "react-geocode";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
@@ -14,8 +14,15 @@ class App extends Component {
   };
 
   componentDidMount = async () => {
-    const url = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
+    // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
+    Geocode.setApiKey("AIzaSyDaIa8mdT93tt85NoVvA9Pq1H8AO6CNB8A");
 
+    // set response language. Defaults to english.
+    Geocode.setLanguage("en");
+
+    const mapBoxApi = `${BASE_URL}?access_token=${mapboxgl.accessToken}`;
+
+    //response from twitter API
     const response = await axios.post(
       "https://photos-mapping.firebaseapp.com/twitterapi"
     );
@@ -27,11 +34,9 @@ class App extends Component {
       dataFromTwitter: response.data.statuses
     });
 
-    // console.log(this.state);
-
     let style = {};
     try {
-      style = await fetch(url).then(res => {
+      style = await fetch(mapBoxApi).then(res => {
         if (res.ok) {
           return res.json();
         } else {
@@ -52,19 +57,33 @@ class App extends Component {
 
     this.map.on("load", () => {
       this.state.dataFromTwitter.forEach((data, index) => {
-        console.log(data);
+        const truncateCreatedDate = () => {
+          const date = data.created_at.substring(4, 10);
+          const year = data.created_at.substring(26, 30);
+          return `${date}, ${year}`;
+        };
+
+        const latlngArray = data.place.bounding_box.coordinates[0][0];
+        const lat = latlngArray[1];
+        const lng = latlngArray[0];
+
+        // Get address from latidude & longitude.
+
+        Geocode.fromLatLng(lat, lng).then(
+          response => {
+            const address = response.results[0].formatted_address;
+            console.log(address);
+          },
+          error => {
+            console.error(error);
+          }
+        );
+
         const photoURL = `https://twitter.com/MariewoqE/status/${data.id_str}`;
         this.map.loadImage(
           //load an image from twitterAPI
           data.entities.media[0].media_url,
           (error, image) => {
-            console.log("--------");
-            //twitter.com/MariewoqE/status/1184762822229495809
-            console.log(data.user);
-            console.log(data.entities.media[0].media_url);
-            console.log(data.place.bounding_box.coordinates[0][0]);
-            console.log("--------");
-
             const photoId = `photo${data.id}`;
 
             if (error) throw error;
@@ -84,7 +103,12 @@ class App extends Component {
                       {
                         type: "Feature",
                         properties: {
-                          description: `<p>Jump to twitter</p><a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
+                          description: `
+                          <p>Date: ${truncateCreatedDate()}</p>
+                          <p>Country: </p>
+                          <p>District: </p>
+                          <p>Jump to twitter</p>
+                          <a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
                         },
                         geometry: {
                           type: "Point",
