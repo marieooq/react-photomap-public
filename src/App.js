@@ -69,11 +69,13 @@ class App extends Component {
         const lat = latlngArray[1];
         const lng = latlngArray[0];
 
+        let addressFromGeoCode;
+
         // Get address from latidude & longitude.
         Geocode.fromLatLng(lat, lng).then(
           response => {
-            const address = response.results[0].formatted_address;
-            console.log(address);
+            addressFromGeoCode = response.results[0].formatted_address;
+            console.log(addressFromGeoCode);
           },
           error => {
             console.error(error);
@@ -108,7 +110,7 @@ class App extends Component {
                           <p>Date: ${truncateCreatedDate()}</p>
                           <p>Place Name: ${data.place.name} </p>
                           <p>Country: ${data.place.country} </p>
-                          <p>Address: </p>
+                          <p>Address: ${addressFromGeoCode}</p>
                           <p>Jump to twitter</p>
                           <a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
                         },
