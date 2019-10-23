@@ -58,7 +58,9 @@ class App extends Component {
     this.map.on("load", () => {
       this.state.dataFromTwitter.forEach((data, index) => {
         console.log("This is data from twitter API");
-        console.log(data);
+        console.log("-----");
+        console.log(data.text);
+        console.log("-----");
         const truncateCreatedDate = () => {
           const date = data.created_at.substring(4, 10);
           const year = data.created_at.substring(26, 30);
@@ -111,6 +113,7 @@ class App extends Component {
                           <p>Place Name: ${data.place.name} </p>
                           <p>Country: ${data.place.country} </p>
                           <p>Address: ${addressFromGeoCode}</p>
+                          <p>Tweet: ${data.text}</p>
                           <p>Jump to twitter</p>
                           <a href=${photoURL} target="_blank" title="Opens in a new window"><em>Twitter</em></a>`
                         },
