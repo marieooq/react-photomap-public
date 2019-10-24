@@ -199,9 +199,6 @@ class App extends Component {
         ]
       };
 
-      console.log("---");
-      console.log(turf);
-      console.log("---");
       // Calculate the distance in kilometers between route start/end point.
       const lineDistance = turf.lineDistance(route.features[0], {
         units: "kilometers"
@@ -212,7 +209,7 @@ class App extends Component {
       // Number of steps to use in the arc and animation, more steps means
       // a smoother arc and animation, but too many steps will result in a
       // low frame rate
-      const steps = 500;
+      const steps = 300;
 
       // Draw an arc between the `origin` & `destination` of the two points
       for (let i = 0; i < lineDistance; i += lineDistance / steps) {
@@ -272,9 +269,9 @@ class App extends Component {
         // The bearing is calculate between the current point and the next point, except
         // at the end of the arc use the previous point and the current point
 
-        console.log("-----");
-        console.log(point.features[0].properties.bearing);
-        console.log("-----");
+        // console.log("-----");
+        // console.log(point.features[0].properties.bearing);
+        // console.log("-----");
 
         point.features[0].properties.bearing = turf.bearing(
           turf.point(
@@ -294,18 +291,17 @@ class App extends Component {
 
         // Request the next frame of animation so long the end has not been reached.
         if (counter < steps - 2) {
-          console.log(`This is steps ${steps}`);
-          console.log(`This is counter ${counter}`);
+          // console.log(`This is steps ${steps}`);
+          // console.log(`This is counter ${counter}`);
           requestAnimationFrame(animate);
         } else {
-          console.log("end");
           return;
         }
 
         counter = counter + 1;
       };
 
-      document.getElementById("replay").addEventListener("click", function() {
+      document.getElementById("replay").addEventListener("click", () => {
         // Set the coordinates of the original point back to origin
         point.features[0].geometry.coordinates = origin;
 
