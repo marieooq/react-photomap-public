@@ -60,10 +60,6 @@ class App extends Component {
 
     this.map.on("load", () => {
       this.state.dataFromTwitter.forEach((data, index) => {
-        // console.log("This is data from twitter API");
-        // console.log("-----");
-        // console.log(data.text);
-        // console.log("-----");
         const truncateCreatedDate = () => {
           const date = data.created_at.substring(4, 10);
           const year = data.created_at.substring(26, 30);
@@ -73,6 +69,9 @@ class App extends Component {
         const latlngArray = data.place.bounding_box.coordinates[0][0];
         const lat = latlngArray[1];
         const lng = latlngArray[0];
+
+        console.log(`lat: ${lat}`);
+        console.log(`lng: ${lng}`);
 
         let addressFromGeoCode;
 
@@ -163,11 +162,11 @@ class App extends Component {
       });
 
       ///////////////////addition///////////////////
-      // San Francisco
-      const origin = [-122.414, 37.776];
+      // vancouver
+      const origin = [-123.133181, 49.272811];
 
-      // Washington DC
-      const destination = [-77.032, 38.913];
+      // thailand
+      const destination = [100.568242, 13.730361];
 
       // A simple line from origin to destination.
       const route = {
@@ -336,7 +335,7 @@ class App extends Component {
     return (
       <div>
         <div className={"map"} ref={e => (this.container = e)}></div>
-        <div class="overlay">
+        <div className="overlay">
           <button id="replay">Replay</button>
         </div>
       </div>
