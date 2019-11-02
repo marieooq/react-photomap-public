@@ -11,7 +11,7 @@ class App extends Component {
   state = {
     style: false,
     dataFromTwitter: []
-  };
+  }
 
   componentDidMount = async () => {
     // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
@@ -26,12 +26,11 @@ class App extends Component {
     const response = await axios.post(
       "https://photos-mapping.firebaseapp.com/twitterapi"
     );
-    // console.log(response.data.statuses);
     // console.log(response.data.statuses[0].entities.media[0].media_url);
     // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
 
     this.setState({
-      dataFromTwitter: response.data.statuses
+      dataFromTwitter: response.data
     });
 
     let style = {};
@@ -59,13 +58,18 @@ class App extends Component {
       this.state.dataFromTwitter.forEach((data, index) => {
         console.log("This is data from twitter API");
         console.log("-----");
-        console.log(data.text);
+        console.log(data);
         console.log("-----");
         const truncateCreatedDate = () => {
           const date = data.created_at.substring(4, 10);
           const year = data.created_at.substring(26, 30);
           return `${date}, ${year}`;
         };
+
+        if (data.place === null) {
+          // Some tweets have no place data
+          return
+        }
 
         const latlngArray = data.place.bounding_box.coordinates[0][0];
         const lat = latlngArray[1];
