@@ -6,7 +6,7 @@ var TwitterClient = require("../util/TwitterClient");
 router.post("/", (req, res, next) => {
   const twitterClient = new TwitterClient();
   twitterClient
-    .getTweets()
+    .getTimeline()
     .then(response => {
       return res.json(response);
     })

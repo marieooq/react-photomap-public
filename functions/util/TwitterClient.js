@@ -13,6 +13,12 @@ class TwitterClient {
   getTweets() {
     return this.client.get("search/tweets", { q: "#photomap" });
   }
+
+  getTimeline() {
+    return this.client.get("statuses/user_timeline", {
+      user_id: "1157001502587645952"
+    });
+  }
 }
 
 module.exports = TwitterClient;

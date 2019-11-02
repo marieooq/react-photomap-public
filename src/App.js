@@ -29,10 +29,10 @@ class App extends Component {
     const response = await axios.post(
       "https://photos-mapping.firebaseapp.com/twitterapi"
     );
-    console.log(response.data.statuses);
+    // console.log(response.data);
 
     this.setState({
-      dataFromTwitter: response.data.statuses
+      dataFromTwitter: response.data
     });
 
     let style = {};
@@ -68,6 +68,7 @@ class App extends Component {
           // Some tweets have no place data
           return;
         }
+        console.log(data);
 
         const latlngArray = data.place.bounding_box.coordinates[0][0];
         const lat = latlngArray[1];
