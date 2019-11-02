@@ -29,11 +29,10 @@ class App extends Component {
     const response = await axios.post(
       "https://photos-mapping.firebaseapp.com/twitterapi"
     );
-    // console.log(response.data.statuses[0].entities.media[0].media_url);
-    // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
+    console.log(response.data.statuses);
 
     this.setState({
-      dataFromTwitter: response.data
+      dataFromTwitter: response.data.statuses
     });
 
     let style = {};
