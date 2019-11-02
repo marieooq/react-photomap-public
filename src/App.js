@@ -29,12 +29,11 @@ class App extends Component {
     const response = await axios.post(
       "https://photos-mapping.firebaseapp.com/twitterapi"
     );
-    // console.log(response.data.statuses);
     // console.log(response.data.statuses[0].entities.media[0].media_url);
     // console.log(response.data.statuses[0].place.bounding_box.coordinates[0][0]);
 
     this.setState({
-      dataFromTwitter: response.data.statuses
+      dataFromTwitter: response.data
     });
 
     let style = {};
@@ -65,6 +64,11 @@ class App extends Component {
           const year = data.created_at.substring(26, 30);
           return `${date}, ${year}`;
         };
+
+        if (data.place === null) {
+          // Some tweets have no place data
+          return;
+        }
 
         const latlngArray = data.place.bounding_box.coordinates[0][0];
         const lat = latlngArray[1];
