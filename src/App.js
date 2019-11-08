@@ -85,13 +85,14 @@ class App extends Component {
         const photoURL = `https://twitter.com/MariewoqE/status/${data.id_str}`;
         this.map.loadImage(
           //load an image from twitterAPI
-          data.entities.media[0].media_url,
+
+          data.entities.media[0].media_url_https,
           (error, image) => {
             const photoId = `photo${data.id}`;
 
             if (error) throw error;
             if (
-              data.entities.media[0].media_url !== null &&
+              data.entities.media[0].media_url_https !== null &&
               data.place !== null
             ) {
               this.map.addImage(photoId, image);
