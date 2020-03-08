@@ -1,22 +1,22 @@
-const Twitter = require("twitter");
+const Twitter = require('twitter');
 
 class TwitterClient {
   constructor() {
     this.client = new Twitter({
-      consumer_key: "7CD8PvPaL1BZ73qp7TQuS5zv6",
-      consumer_secret: "tJrtWncusxkJWNNAqTV2JwWrF8HDDNyMKBLmqejEK6RB1FJe0C",
-      access_token_key: "1157001502587645952-NI1ZRkhm3x09w9SAp1dWDijCD2sRXZ",
-      access_token_secret: "rHmuaNraDZD3xH0ivN0wLyoPfz3F5OBQXXSmq5pxEWEhX"
+      consumer_key: '*********',
+      consumer_secret: '*********',
+      access_token_key: '*********-*********',
+      access_token_secret: '*********'
     });
   }
 
   getTweets() {
-    return this.client.get("search/tweets", { q: "#photomap" });
+    return this.client.get('search/tweets', { q: '#photomap' });
   }
 
   getTimeline() {
-    return this.client.get("statuses/user_timeline", {
-      user_id: "1157001502587645952"
+    return this.client.get('statuses/user_timeline', {
+      user_id: '*********'
     });
   }
 }
