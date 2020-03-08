@@ -3,7 +3,8 @@
 
 ## ✏️Description
 This app enables to locate the photos of my twitter timeline on the world map. <br>
-It uses twitter API to get data like image, location and published time, To show those data on the map it uses Mapbox API as well. 
+It uses twitter API to get data like image, location and published time.<br>
+In order to show those data on the map it uses Mapbox API as well. 
 
 ## 💻Stack
 - HTML
